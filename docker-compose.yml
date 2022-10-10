@@ -1,0 +1,13 @@
+version: "3"
+services:
+  api:
+    container_name: node_api_container
+    build: ./docker/api
+    ports:
+      - 3000:3000
+    volumes:
+      - ./api:/api
+    tty: true
+    environment:
+      CHOKIDAR_USEPOLLING: 1
+      TZ: Asia/Tokyo
