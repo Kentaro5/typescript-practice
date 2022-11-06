@@ -1,30 +1,44 @@
+import {
+    createLeft2,
+    createRight2,
+    Either2,
+} from '../../../Common/EitherResult2'
+
 type VerifiedAddress = {
-    email: string,
-    verified: boolean
+    email: string
+    verified: true
 }
 
 // verifiedはつねにfalse
 type UnVerifiedAddress = {
-    email: string,
-    verified: boolean
+    email: string
+    verified: false
 }
 
-type CustomerEmailAddress = VerifiedAddress | UnVerifiedAddress
+type CustomerEmailAddress = Either2<UnVerifiedAddress, VerifiedAddress>
 
-export const createCustomerEmailAddress = (email: string):CustomerEmailAddress => {
-    return {
+export const createCustomerEmailAddress = (
+    email: string
+): CustomerEmailAddress => {
+    const invaild = false
+    if (invaild) {
+        return createLeft2<UnVerifiedAddress, VerifiedAddress>({
+            email: email,
+            verified: false,
+        })
+    }
+
+    return createRight2<UnVerifiedAddress, VerifiedAddress>({
         email: email,
-        verified: false
-    }
+        verified: true,
+    })
 }
 
-export const createVerifiedCustomerEmailAddress = (customerEmailAddress: UnVerifiedAddress): VerifiedAddress => {
-    if (customerEmailAddress.verified === true) {
-        // エラーを投げる
-    }
-
+export const createVerifiedCustomerEmailAddress = (
+    customerEmailAddress: UnVerifiedAddress
+): VerifiedAddress => {
     return {
         email: customerEmailAddress.email,
-        verified: true
+        verified: true,
     }
 }
