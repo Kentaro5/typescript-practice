@@ -13,20 +13,24 @@ router.get('/', function (req, res, next) {
     var addTwoFunction = addFunctionGenerator(2);
     var addThreeFunction = addFunctionGenerator(3);
     var helloFunc = curriedGreetingFunction('Hello');
-    var add1ThenSquare = compose(add1, square);
-    var orderId = OrderId_1.createOrderId('orderId');
-    var verifiedCustomerEmailAddress = CustomerEmailAddress_1.createVerifiedCustomerEmailAddress(customerEmailAddress);
+    //const add1ThenSquare = compose( add1, square)
+    var array = [1];
+    var result = array.reduce(function (prev, current) { return prev + current; }, 0);
+    //const pipe = (...fns:Array<(num:number) => number>) => (x:number) => fns.reduce((y, f) => f(y), x);
+    // function pipe
+    var output_final = pipe(square, checkNumber, double)(2);
+    var orderId = OrderId_1.toOrderId('orderId');
     res.end(JSON.stringify([
         customerEmailAddress,
-        verifiedCustomerEmailAddress,
         addTwoFunction(1),
         addThreeFunction(1),
         helloFunc('Ken'),
         helloFunc('KenTo'),
-        add1ThenSquare(5),
         orderId.value,
         '😄💢✋'.split('').length,
-        Array.from('😄💢✋').length
+        Array.from('😄💢✋').length,
+        result,
+        output_final,
     ]));
     next();
 });
@@ -75,4 +79,35 @@ var square = function (num) {
  * @param f2
  */
 var compose = function (f1, f2) { return function (value) { return f2(f1(value)); }; };
+/**
+ * monadは以下３点
+ * 1.データの構造
+ * 2.関係する関数の塊
+ * 3.関数がどのように処理されるかを示すもの
+ * monadでは、データ・タイプは以下2点を持つ
+ * return メソッド、bindメソッド
+ * return メソッド＝nomarlバリューをモナドバリューに変更するもの
+ * bindモナド関数をチェインするためのメソッド
+ */
+/**
+ * 9章の結果のbool値での切り替え
+ */
+var pipe = function () {
+    var fns = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        fns[_i] = arguments[_i];
+    }
+    return function (value) {
+        return fns.reduce(function (acc, fn) { return fn(acc); }, value);
+    };
+};
+var double = function (x) { return x * 3; };
+var square2 = function (x) { return x * x; };
+var checkNumber = function (num) {
+    if (num === 4) {
+        return num;
+    }
+    return 1;
+};
+// #9から読むこと
 exports.default = router;
